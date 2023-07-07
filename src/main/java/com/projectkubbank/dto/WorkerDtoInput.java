@@ -4,22 +4,17 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
-public class TaskDtoInput implements Serializable {
+public class WorkerDtoInput implements Serializable {
     @Serial
-    private static final long serialVersionUID = -3462266196278777496L;
-
+    private static final long serialVersionUID = -2069111562748051924L;
     private UUID id;
-    private String title;
-    private String description;
-    private LocalDateTime time;
-    private String status;
-    private UUID performer;
+    private String name;
+    private String position;
+    private String avatar;
 
-    public TaskDtoInput(){}
-
+    public WorkerDtoInput(){}
 
 }

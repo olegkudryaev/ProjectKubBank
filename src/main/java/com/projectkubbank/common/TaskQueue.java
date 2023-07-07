@@ -1,6 +1,6 @@
-package com.projectkubbank.commonBeans;
+package com.projectkubbank.common;
 
-import model.Task;
+import com.projectkubbank.model.Task;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayDeque;

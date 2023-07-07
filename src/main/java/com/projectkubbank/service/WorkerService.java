@@ -1,22 +1,23 @@
 package com.projectkubbank.service;
 
-import com.projectkubbank.dto.TaskDtoInput;
+import com.projectkubbank.dto.WorkerDtoInput;
 import com.projectkubbank.dto.wrapped.DtoWrapper;
-import com.projectkubbank.dto.wrapped.TaskDtoWrapper;
-import com.projectkubbank.dto.wrapped.TaskMiniListDtoWrapper;
+import com.projectkubbank.dto.wrapped.WorkerDtoWrapped;
+import com.projectkubbank.dto.wrapped.WorkerListDtoWrapped;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
-public interface TaskService {
-    DtoWrapper addTaskInQueue(TaskDtoInput taskDtoInput);
+public interface WorkerService {
 
-    DtoWrapper addThreeTasksToDB();
+    DtoWrapper addWorker(WorkerDtoInput workerDtoInput);
 
-    TaskMiniListDtoWrapper getAllTasks();
+    DtoWrapper updateWorker(WorkerDtoInput workerDtoInput);
 
-    TaskDtoWrapper getTaskById(UUID id);
+    DtoWrapper deleteWorker(UUID workerId);
 
-    DtoWrapper updateTask(TaskDtoInput taskDtoInput);
+    WorkerDtoWrapped getWorkerById(UUID workerId);
+
+    WorkerListDtoWrapped getAllWorker();
 }

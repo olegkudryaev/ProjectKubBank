@@ -1,4 +1,4 @@
-package com.projects7.dto.wrapped;
+package com.projectkubbank.dto.wrapped;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

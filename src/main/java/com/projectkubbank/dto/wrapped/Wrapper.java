@@ -1,10 +1,10 @@
-package ru.insyres.PERCo_Web_11_81.dto.wrapped;
-
-import java.util.List;
+package com.projectkubbank.dto.wrapped;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @Builder
