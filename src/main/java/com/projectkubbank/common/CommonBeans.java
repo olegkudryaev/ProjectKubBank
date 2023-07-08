@@ -1,5 +1,7 @@
 package com.projectkubbank.common;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -7,8 +9,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
+
 @Component
-public class CommonBeans{
+public class CommonBeans {
     @Value("${driver.class.name}")
     String driverClassName;
     @Value("${datasource.url}")
@@ -24,18 +28,24 @@ public class CommonBeans{
     }
 
     @Bean
-    public DriverManagerDataSource dataSource(){
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+    public DataSource dataSource() {
+        /*DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(driverClassName);
         dataSource.setUrl(datasourceUrl);
         dataSource.setUsername(datasourceUsername);
-        dataSource.setPassword(datasourcePassword);
-        return dataSource;
+        dataSource.setPassword(datasourcePassword);*/
+
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(datasourceUrl);
+        config.setUsername(datasourceUsername);
+        config.setPassword(datasourcePassword);
+        config.setDriverClassName(driverClassName);
+        config.setMaximumPoolSize(10);
+        return new HikariDataSource(config);
     }
 
     @Bean
-    public JdbcTemplate jdbcTemplate (DriverManagerDataSource dataSource){
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        return jdbcTemplate;
+    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
     }
 }

@@ -15,13 +15,14 @@ public class TaskMiniDto implements Serializable {
     private UUID id;
     private String title;
     private String status;
-    
-    public TaskMiniDto(){}
 
-    public TaskMiniDto(Task task){
+    public TaskMiniDto() {
+    }
+
+    public TaskMiniDto(Task task) {
         this.id = task.getId();
         this.title = task.getTitle();
         this.status = task.getStatus();
     }
-    
+
 }

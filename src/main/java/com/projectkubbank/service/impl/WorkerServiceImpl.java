@@ -34,12 +34,12 @@ public class WorkerServiceImpl implements WorkerService {
     public DtoWrapper addWorker(WorkerDtoInput workerDtoInput) {
         try {
             Worker worker = modelMapper.map(workerDtoInput, Worker.class);
-            if(taskRepository.addWorker(worker)) {
+            if (taskRepository.addWorker(worker)) {
                 return DtoWrapper.builder().message("Работник добавлен в БД").snackbarType("Info").success(true).build();
             }
             return DtoWrapper.builder().message("Не удалось добавить работника в БД").snackbarType("Info")
                     .success(false).build();
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
             throw new RuntimeException(e.getLocalizedMessage());
         }
@@ -52,7 +52,7 @@ public class WorkerServiceImpl implements WorkerService {
             if (taskRepository.updateWorker(worker)) {
                 return DtoWrapper.builder().message("Работник обновлен в БД").snackbarType("Info").success(true).build();
             }
-            return DtoWrapper.builder().message("Работник обновлен в БД").snackbarType("Info").success(true).build();
+            return DtoWrapper.builder().message("Работник не обновлен в БД").snackbarType("error").success(false).build();
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
             throw new RuntimeException(e.getLocalizedMessage());
@@ -60,12 +60,25 @@ public class WorkerServiceImpl implements WorkerService {
     }
 
     @Override
-    public DtoWrapper deleteWorker(UUID workerId) {
+    public DtoWrapper deleteWorkerWithTasks(UUID workerId) {
         try {
-            if (taskRepository.deleteWorker(workerId)) {
-                return DtoWrapper.builder().message(" ").snackbarType("Info").success(true).build();
+            if (taskRepository.deleteWorkerWithTasks(workerId)) {
+                return DtoWrapper.builder().message("Работник удален из БД, вместе с задачами").snackbarType("info").success(true).build();
             }
-            return DtoWrapper.builder().message("Работник обновлен в БД").snackbarType("Info").success(true).build();
+            return DtoWrapper.builder().message("Работник не удален из БД").snackbarType("error").success(false).build();
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            throw new RuntimeException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public DtoWrapper deleteWorkerWithOutTasks(UUID workerId) {
+        try {
+            if (taskRepository.deleteWorkerWithOutTasks(workerId)) {
+                return DtoWrapper.builder().message("Работник удален из БД, без задач").snackbarType("info").success(true).build();
+            }
+            return DtoWrapper.builder().message("Работник не удален из БД").snackbarType("error").success(false).build();
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
             throw new RuntimeException(e.getLocalizedMessage());
@@ -76,7 +89,7 @@ public class WorkerServiceImpl implements WorkerService {
     public WorkerDtoWrapped getWorkerById(UUID workerId) {
         try {
             Worker workerById = taskRepository.getWorkerById(workerId);
-            if (workerById!=null) {
+            if (workerById != null) {
                 return new WorkerDtoWrapped(new WorkerDto(workerById));
             }
             return new WorkerDtoWrapped(null);
@@ -96,7 +109,7 @@ public class WorkerServiceImpl implements WorkerService {
                 workers.forEach(worker -> workersDto.add(new WorkerDto(worker)));
                 return new WorkerListDtoWrapped(workersDto);
             }
-            return null;
+            return new WorkerListDtoWrapped(null);
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
             throw new RuntimeException(e.getLocalizedMessage());

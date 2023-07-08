@@ -4,14 +4,15 @@ import com.projectkubbank.model.Task;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @Component
 public class TaskQueue {
     private static TaskQueue instance;
-    private ArrayDeque<Task> deque;
+    private LinkedBlockingQueue<Task> deque;
 
     private TaskQueue() {
-        deque = new ArrayDeque<>();
+        deque = new LinkedBlockingQueue<>();
     }
 
     public static synchronized TaskQueue getInstance() {
@@ -22,10 +23,14 @@ public class TaskQueue {
     }
 
     public void addItem(Task task) {
-        deque.add(task);
+        synchronized (this) {
+            deque.add(task);
+        }
     }
 
     public Task removeItem() {
-        return deque.poll();
+        synchronized (this) {
+            return deque.poll();
+        }
     }
 }

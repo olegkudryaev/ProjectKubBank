@@ -28,6 +28,7 @@ public class TaskController {
     private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
 
     private final TaskService taskService;
+
     @Autowired
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
@@ -41,7 +42,7 @@ public class TaskController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = DtoWrapper.class)))})
     @PostMapping("/AddTaskInQueue")
     public ResponseEntity<DtoWrapper> addTaskInQueue(
-           @RequestBody List<TaskDtoInput> taskDtoInput) {
+            @RequestBody List<TaskDtoInput> taskDtoInput) {
         DtoWrapper result = taskService.addTaskInQueue(taskDtoInput);
         return new ResponseEntity<>(result, result == null ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
     }

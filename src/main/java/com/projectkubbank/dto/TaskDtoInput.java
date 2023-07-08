@@ -16,9 +16,10 @@ public class TaskDtoInput implements Serializable {
     private String description;
     private LocalDateTime time;
     private String status;
-    private UUID performer;
+    //private UUID performer;
 
-    public TaskDtoInput(){}
+    public TaskDtoInput() {
+    }
 
 
 }

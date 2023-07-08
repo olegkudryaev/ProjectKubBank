@@ -34,7 +34,6 @@ public class WorkerController {
     }
 
 
-
     @Operation(summary = "Метод добавляет работника в БД")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Работник добавлен в БД",
@@ -63,17 +62,31 @@ public class WorkerController {
         return new ResponseEntity<>(result, result == null ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
     }
 
-    @Operation(summary = "Метод удаляет работника из БД")
+    @Operation(summary = "Метод удаляет работника из БД вместе с задачами")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Работник удален вместе с задачами",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = DtoWrapper.class))),
+            @ApiResponse(responseCode = "404", description = "Не удалось удалить работника и его задачи",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = DtoWrapper.class)))})
+    @DeleteMapping("/DeleteWorkerWithTasks")
+    public ResponseEntity<DtoWrapper> deleteWorkerWithTasks(
+            @Parameter(description = "workerId") @RequestParam(value = "id", required = true) UUID id) {
+        DtoWrapper result = null;
+        result = workerService.deleteWorkerWithTasks(id);
+        return new ResponseEntity<>(result, result == null ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
+    }
+
+    @Operation(summary = "Метод удаляет работника из БД без задач")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Работник удален",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = DtoWrapper.class))),
             @ApiResponse(responseCode = "404", description = "Не удалось удалить работника",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = DtoWrapper.class)))})
-    @DeleteMapping("/DeleteWorker")
-    public ResponseEntity<DtoWrapper> deleteWorker(
+    @DeleteMapping("/DeleteWorkerWithOutTasks")
+    public ResponseEntity<DtoWrapper> deleteWorkerWithOutTasks(
             @Parameter(description = "workerId") @RequestParam(value = "workerId", required = true) UUID workerId) {
         DtoWrapper result = null;
-        result = workerService.deleteWorker(workerId);
+        result = workerService.deleteWorkerWithOutTasks(workerId);
         return new ResponseEntity<>(result, result == null ? HttpStatus.BAD_REQUEST : HttpStatus.OK);
     }
 

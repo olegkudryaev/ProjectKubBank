@@ -15,9 +15,13 @@ public interface WorkerService {
 
     DtoWrapper updateWorker(WorkerDtoInput workerDtoInput);
 
-    DtoWrapper deleteWorker(UUID workerId);
+    DtoWrapper deleteWorkerWithTasks(UUID workerId);
+
+    DtoWrapper deleteWorkerWithOutTasks(UUID id);
 
     WorkerDtoWrapped getWorkerById(UUID workerId);
 
     WorkerListDtoWrapped getAllWorker();
+
+
 }

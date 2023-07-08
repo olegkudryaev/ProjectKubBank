@@ -10,15 +10,15 @@ public class WorkerDtoWrapped extends WrapperOne<WorkerDto> implements Serializa
     @Serial
     private static final long serialVersionUID = -4481829047773384837L;
 
-    public WorkerDtoWrapped(WorkerDto workerDtoDto){
-        if(workerDtoDto != null) {
+    public WorkerDtoWrapped(WorkerDto workerDtoDto) {
+        if (workerDtoDto != null) {
             this.setSuccess(true);
-            this.setMessage("info");
+            this.setMessage("Работник по id получен");
             this.setSnackbarType("info");
             this.setContent(workerDtoDto);
-        }else{
+        } else {
             this.setSuccess(false);
-            this.setMessage("error");
+            this.setMessage("Работник по id не получен");
             this.setSnackbarType("error");
             this.setContent(null);
         }

@@ -13,12 +13,12 @@ public class WorkerListDtoWrapped extends Wrapper<WorkerDto> implements Serializ
     public WorkerListDtoWrapped(List<WorkerDto> workerDto) {
         if (workerDto != null) {
             this.setSuccess(true);
-            this.setMessage("info");
+            this.setMessage("Все работники получены");
             this.setSnackbarType("info");
             this.setContent(workerDto);
-        }else {
+        } else {
             this.setSuccess(false);
-            this.setMessage("error");
+            this.setMessage("Все работники не получены");
             this.setSnackbarType("error");
             this.setContent(null);
         }

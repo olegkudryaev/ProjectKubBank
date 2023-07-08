@@ -15,6 +15,7 @@ public class WorkerDtoInput implements Serializable {
     private String position;
     private String avatar;
 
-    public WorkerDtoInput(){}
+    public WorkerDtoInput() {
+    }
 
 }

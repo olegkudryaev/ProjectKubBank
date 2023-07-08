@@ -14,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +39,9 @@ public class TaskServiceImpl implements TaskService {
         this.taskRepository = taskRepository;
     }
 
+    @Value("${count.thread}")
+    int countThreads;
+
     @Override
     public DtoWrapper addTaskInQueue(List<TaskDtoInput> taskDtoInputList) {
         try {
@@ -48,59 +52,76 @@ public class TaskServiceImpl implements TaskService {
             return DtoWrapper.builder().message("Задача в очереди").snackbarType("Info").success(true).build();
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
+            throw new RuntimeException(e.getLocalizedMessage());
         }
-        return DtoWrapper.builder().message("Не удалось разметсить задачу в очередь").snackbarType("Error")
-                .success(false).build();
     }
 
     @Override
-    @Transactional
     public DtoWrapper addThreeTasksToDB() {
-        ExecutorService executor = Executors.newFixedThreadPool(3);
-        Runnable task1 = () -> {
-            System.out.println("Task 1 is running");
-            Task task = taskQueue.removeItem();
-            if(task!=null) {
-                taskRepository.addTask(task);
-            }
-        };
-        Runnable task2 = () -> {
-            System.out.println("Task 2 is running");
-            Task task = taskQueue.removeItem();
-            if(task!=null) {
-                taskRepository.addTask(task);
-            }
-        };
-        Runnable task3 = () -> {
-            System.out.println("Task 3 is running");
-            Task task = taskQueue.removeItem();
-            if(task!=null) {
-                taskRepository.addTask(task);
-            }
-        };
-        executor.execute(task1);
-        executor.execute(task2);
-        executor.execute(task3);
-        executor.shutdown();
-        return DtoWrapper.builder().message("Задача в очереди").snackbarType("Info").success(true).build();
+        try {
+            ExecutorService executor = Executors.newFixedThreadPool(countThreads);
+            Runnable task1 = () -> {
+                logger.info("Task 1 is running");
+                Task task = taskQueue.removeItem();
+                if (task != null) {
+                    taskRepository.addTask(task);
+                }
+            };
+            Runnable task2 = () -> {
+                logger.info("Task 2 is running");
+                Task task = taskQueue.removeItem();
+                if (task != null) {
+                    taskRepository.addTask(task);
+                }
+            };
+            Runnable task3 = () -> {
+                logger.info("Task 3 is running");
+                Task task = taskQueue.removeItem();
+                if (task != null) {
+                    taskRepository.addTask(task);
+                }
+            };
+            executor.execute(task1);
+            executor.execute(task2);
+            executor.execute(task3);
+            executor.shutdown();
+            return DtoWrapper.builder().message("Задача в очереди").snackbarType("Info").success(true).build();
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            throw new RuntimeException(e.getLocalizedMessage());
+        }
     }
 
     @Override
     public TaskMiniListDtoWrapper getAllTasks() {
-        List<Task> taskList = taskRepository.getAllTask();
-        List<TaskMiniDto> taskMiniDto = new ArrayList<>();
-        taskList.forEach(t-> taskMiniDto.add(modelMapper.map(t, TaskMiniDto.class)));
-        return new TaskMiniListDtoWrapper(taskMiniDto);
+        try {
+            List<Task> taskList = taskRepository.getAllTask();
+            if(taskList != null){
+                List<TaskMiniDto> taskMiniDto = new ArrayList<>();
+                taskList.forEach(t -> taskMiniDto.add(modelMapper.map(t, TaskMiniDto.class)));
+                return new TaskMiniListDtoWrapper(taskMiniDto);
+            }
+            return new TaskMiniListDtoWrapper(null);
+
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            throw new RuntimeException(e.getLocalizedMessage());
+        }
     }
 
     @Override
     public TaskDtoWrapper getTaskById(UUID id) {
-        Task task = taskRepository.getTaskById(id);
-        if (task != null) {
-            TaskDto taskDto = modelMapper.map(task, TaskDto.class);
-            return new TaskDtoWrapper(taskDto);
+        try {
+            Task task = taskRepository.getTaskById(id);
+            if (task != null) {
+                TaskDto taskDto = modelMapper.map(task, TaskDto.class);
+                return new TaskDtoWrapper(taskDto);
+            }
+            return new TaskDtoWrapper(null);
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+            throw new RuntimeException(e.getLocalizedMessage());
         }
-        return null;
     }
 
     @Override
@@ -108,14 +129,14 @@ public class TaskServiceImpl implements TaskService {
     public DtoWrapper updateTask(TaskDtoInput taskDtoInput) {
         try {
             Task task = modelMapper.map(taskDtoInput, Task.class);
-            if(taskRepository.updateTask(task)){
+            if (taskRepository.updateTask(task)) {
                 return DtoWrapper.builder().message("Задача обновлена").snackbarType("Info").success(true).build();
             }
             return DtoWrapper.builder().message("Задача не обновлена").snackbarType("Info").success(true).build();
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
+            throw new RuntimeException(e.getLocalizedMessage());
         }
-        return null;
     }
 
     @Override
@@ -127,10 +148,10 @@ public class TaskServiceImpl implements TaskService {
             } else {
                 return DtoWrapper.builder().message("Задаче не назначен работник").snackbarType("Info").success(true).build();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
+            throw new RuntimeException(e.getLocalizedMessage());
         }
-        return null;
     }
 
 }
