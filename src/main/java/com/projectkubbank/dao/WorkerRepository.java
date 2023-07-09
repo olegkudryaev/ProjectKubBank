@@ -20,5 +20,4 @@ public interface WorkerRepository {
 
     List<Worker> getAllWorker();
 
-
 }

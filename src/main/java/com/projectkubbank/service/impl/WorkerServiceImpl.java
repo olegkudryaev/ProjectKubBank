@@ -6,21 +6,25 @@ import com.projectkubbank.dto.WorkerDtoInput;
 import com.projectkubbank.dto.wrapped.DtoWrapper;
 import com.projectkubbank.dto.wrapped.WorkerDtoWrapped;
 import com.projectkubbank.dto.wrapped.WorkerListDtoWrapped;
+import com.projectkubbank.exceptions.WorkerNotFoundException;
 import com.projectkubbank.service.WorkerService;
 import com.projectkubbank.model.Worker;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Service(value = "workerService")
+@Slf4j
 public class WorkerServiceImpl implements WorkerService {
-    private static final Logger logger = LoggerFactory.getLogger(WorkerServiceImpl.class);
+
     private ModelMapper modelMapper;
     private WorkerRepository taskRepository;
 
@@ -31,6 +35,7 @@ public class WorkerServiceImpl implements WorkerService {
     }
 
     @Override
+    @Transactional
     public DtoWrapper addWorker(WorkerDtoInput workerDtoInput) {
         try {
             Worker worker = modelMapper.map(workerDtoInput, Worker.class);
@@ -40,12 +45,13 @@ public class WorkerServiceImpl implements WorkerService {
             return DtoWrapper.builder().message("Не удалось добавить работника в БД").snackbarType("Info")
                     .success(false).build();
         } catch (Exception e) {
-            logger.error(e.getLocalizedMessage());
+            log.error(e.getLocalizedMessage());
             throw new RuntimeException(e.getLocalizedMessage());
         }
     }
 
     @Override
+    @Transactional
     public DtoWrapper updateWorker(WorkerDtoInput workerDtoInput) {
         try {
             Worker worker = modelMapper.map(workerDtoInput, Worker.class);
@@ -54,12 +60,13 @@ public class WorkerServiceImpl implements WorkerService {
             }
             return DtoWrapper.builder().message("Работник не обновлен в БД").snackbarType("error").success(false).build();
         } catch (Exception e) {
-            logger.error(e.getLocalizedMessage());
+            log.error(e.getLocalizedMessage());
             throw new RuntimeException(e.getLocalizedMessage());
         }
     }
 
     @Override
+    @Transactional
     public DtoWrapper deleteWorkerWithTasks(UUID workerId) {
         try {
             if (taskRepository.deleteWorkerWithTasks(workerId)) {
@@ -67,12 +74,13 @@ public class WorkerServiceImpl implements WorkerService {
             }
             return DtoWrapper.builder().message("Работник не удален из БД").snackbarType("error").success(false).build();
         } catch (Exception e) {
-            logger.error(e.getLocalizedMessage());
+            log.error(e.getLocalizedMessage());
             throw new RuntimeException(e.getLocalizedMessage());
         }
     }
 
     @Override
+    @Transactional
     public DtoWrapper deleteWorkerWithOutTasks(UUID workerId) {
         try {
             if (taskRepository.deleteWorkerWithOutTasks(workerId)) {
@@ -80,27 +88,30 @@ public class WorkerServiceImpl implements WorkerService {
             }
             return DtoWrapper.builder().message("Работник не удален из БД").snackbarType("error").success(false).build();
         } catch (Exception e) {
-            logger.error(e.getLocalizedMessage());
+            log.error(e.getLocalizedMessage());
             throw new RuntimeException(e.getLocalizedMessage());
         }
     }
 
     @Override
+    @Transactional(readOnly = true)
     public WorkerDtoWrapped getWorkerById(UUID workerId) {
         try {
             Worker workerById = taskRepository.getWorkerById(workerId);
             if (workerById != null) {
                 return new WorkerDtoWrapped(new WorkerDto(workerById));
             }
-            return new WorkerDtoWrapped(null);
+            throw new WorkerNotFoundException();
+        } catch (WorkerNotFoundException workerNotFoundException) {
+            throw workerNotFoundException;
         } catch (Exception e) {
-            logger.error(e.getLocalizedMessage());
+            log.error(e.getLocalizedMessage());
             throw new RuntimeException(e.getLocalizedMessage());
         }
-
     }
 
     @Override
+    @Transactional(readOnly = true)
     public WorkerListDtoWrapped getAllWorker() {
         try {
             List<Worker> workers = taskRepository.getAllWorker();
@@ -111,7 +122,7 @@ public class WorkerServiceImpl implements WorkerService {
             }
             return new WorkerListDtoWrapped(null);
         } catch (Exception e) {
-            logger.error(e.getLocalizedMessage());
+            log.error(e.getLocalizedMessage());
             throw new RuntimeException(e.getLocalizedMessage());
         }
     }

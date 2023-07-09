@@ -22,6 +22,5 @@ public class WorkerListDtoWrapped extends Wrapper<WorkerDto> implements Serializ
             this.setSnackbarType("error");
             this.setContent(null);
         }
-
     }
 }

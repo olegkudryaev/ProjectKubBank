@@ -3,109 +3,121 @@ package com.projectkubbank.dao.impl;
 import com.projectkubbank.dao.TaskRepository;
 import com.projectkubbank.dto.wrapped.DtoWrapper;
 import com.projectkubbank.model.Task;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
 @Repository(value = "taskRepository")
+@Slf4j
+@RequiredArgsConstructor
 public class TaskRepositoryImpl implements TaskRepository {
-    private static final Logger logger = LoggerFactory.getLogger(TaskRepository.class);
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public TaskRepositoryImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
+    @Transactional
     public DtoWrapper addTask(Task task) {
-        logger.info("Начат процесс добавления задачи в БД");
+        log.info("Начат процесс добавления задачи в БД");
         try {
             Object[] values = {task.getId(), task.getTitle(), task.getDescription(), task.getTime(), task.getStatus()};
             String sql = "INSERT INTO public.\"Tasks\" (\"id\", \"title\", \"description\", \"time\", \"status\") " +
                     "VALUES (?, ?, ?, ?, ?)";
             if (jdbcTemplate.update(sql, values) > 0) {
-                logger.info("Задача добавлена в БД");
-                return DtoWrapper.builder().message("Задача добавлена в БД").snackbarType("Info").success(true).build();
+                log.info("Задача добавлена в БД");
+                return DtoWrapper.builder().message("Задача добавлена в БД").snackbarType("info").success(true).build();
             } else {
-                logger.info("Задача добавлена в БД");
-                return DtoWrapper.builder().message("Задача добавлена в БД").snackbarType("Info").success(true).build();
+                log.info("Задача не добавлена в БД");
+                return DtoWrapper.builder().message("Задача не добавлена в БД").snackbarType("error").success(false).build();
             }
         } catch (DataAccessException e) {
-            logger.error(e.getLocalizedMessage());
-            throw new RuntimeException(e.getLocalizedMessage());
+            log.error(e.getLocalizedMessage());
+            throw e;
         }
     }
 
     @Override
-    public List<Task> getAllTask() {
-        logger.info("Начат процес получения всех задач");
+    @Transactional(readOnly = true)
+    public Optional<List<Task>> getAllTasks() {
+        log.info("Начат процес получения всех задач");
         try {
-            List<Task> taskList = jdbcTemplate.query("SELECT * FROM public.\"Tasks\"",
-                    new BeanPropertyRowMapper<>(Task.class));
-            logger.info("Лист задач получен");
-            return taskList;
-        } catch (DataAccessException e) {
-            logger.error(e.getLocalizedMessage());
-            throw new RuntimeException(e.getLocalizedMessage());
-        }
-    }
-
-    @Override
-    public Task getTaskById(UUID id) {
-        logger.info("Начат процес получения задачи по id");
-        try {
-            Task task = jdbcTemplate.queryForObject(
-                    "SELECT * FROM public.\"Tasks\" WHERE id = ?", new Object[]{id},
-                    new BeanPropertyRowMapper<>(Task.class));
-            if(task != null){
-                logger.info("Задача по id получена");
-                return task;
+            Optional<List<Task>> taskList = Optional.of(jdbcTemplate.query("SELECT * FROM public.\"Tasks\"",
+                    new BeanPropertyRowMapper<>(Task.class)));
+            if (taskList.isPresent()) {
+                log.info("Лист задач получен");
+                return taskList;
             } else {
-                logger.info("Задача по id не получена");
-                return null;
+                return Optional.empty();
             }
         } catch (DataAccessException e) {
-            logger.error(e.getLocalizedMessage());
-            throw new RuntimeException(e.getLocalizedMessage());
+            log.error(e.getLocalizedMessage());
+            throw e;
         }
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Optional<Task> getTaskById(UUID taskId) {
+        log.info("Начат процес получения задачи по id");
+        try {
+            Optional<List<Task>> taskList = Optional.of(jdbcTemplate.query("SELECT * FROM public.\"Tasks\" WHERE id = ?", new Object[]{taskId},
+                    new BeanPropertyRowMapper<>(Task.class)));
+            if (taskList.get().size() > 0) {
+                log.info("Задача по id получена");
+                return taskList.get().stream().findFirst();
+            } else {
+                log.info("Задача по id не получена");
+                return Optional.empty();
+            }
+        } catch (DataAccessException e) {
+            log.error(e.getLocalizedMessage());
+            throw e;
+        }
+    }
+
+    @Override
+    @Transactional
     public boolean updateTask(Task task) {
-        logger.info("Начат процес обновления задачи в БД");
+        log.info("Начат процес обновления задачи в БД");
         try {
             String sql = "UPDATE public.\"Tasks\" SET title = ?, description = ?, time = ?, status = ? WHERE id = ?";
-            if(jdbcTemplate.update(sql, task.getTitle(), task.getDescription(), task.getTime(), task.getStatus()
-                    , task.getId()) > 0){
-                logger.info("Задача в БД обновлена");
+            if (jdbcTemplate.update(sql, task.getTitle(), task.getDescription(), task.getTime(), task.getStatus()
+                    , task.getId()) > 0) {
+                log.info("Задача в БД обновлена");
                 return true;
             } else {
-                logger.info("Задача в БД не обновлена");
+                log.info("Задача в БД не обновлена");
                 return false;
             }
         } catch (DataAccessException e) {
-            logger.error(e.getLocalizedMessage());
-            throw new RuntimeException(e.getLocalizedMessage());
+            log.error(e.getLocalizedMessage());
+            throw e;
         }
     }
 
     @Override
+    @Transactional
     public boolean addWorkerToTask(UUID workerId, UUID taskId) {
-        String sql = "UPDATE public.\"Tasks\" SET performer = ? WHERE id = ?";
-        if(jdbcTemplate.update(sql, workerId, taskId) > 0){
-            return true;
-        } else {
-            return false;
+        log.info("Начат процес добавления работнику задачи");
+        try {
+            String sql = "UPDATE public.\"Tasks\" SET performer = ? WHERE id = ?";
+            if (jdbcTemplate.update(sql, workerId, taskId) > 0) {
+                log.info("Задача добавлена работнику");
+                return true;
+            } else {
+                log.info("Задача не добавлена работнику");
+                return false;
+            }
+        } catch (DataAccessException e) {
+            log.error(e.getLocalizedMessage());
+            throw e;
         }
     }
 }

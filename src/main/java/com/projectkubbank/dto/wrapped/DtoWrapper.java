@@ -13,11 +13,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DtoWrapper implements Serializable {
-
     @Serial
     private static final long serialVersionUID = -1611929146412107565L;
 
     private boolean success;
     private String message;
     private String snackbarType;
+
 }

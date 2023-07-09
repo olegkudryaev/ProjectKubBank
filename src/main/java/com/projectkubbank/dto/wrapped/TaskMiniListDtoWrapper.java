@@ -11,7 +11,7 @@ public class TaskMiniListDtoWrapper extends Wrapper<TaskMiniDto> implements Seri
     private static final long serialVersionUID = 6081448266055455951L;
 
     public TaskMiniListDtoWrapper(List<TaskMiniDto> taskMiniDto) {
-        if(taskMiniDto != null){
+        if (taskMiniDto != null) {
             this.setSuccess(true);
             this.setMessage("Все задачи получены");
             this.setSnackbarType("info");

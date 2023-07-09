@@ -11,15 +11,14 @@ import java.util.UUID;
 public class TaskDtoInput implements Serializable {
     @Serial
     private static final long serialVersionUID = -3462266196278777496L;
+
     private UUID id;
     private String title;
     private String description;
     private LocalDateTime time;
     private String status;
-    //private UUID performer;
 
     public TaskDtoInput() {
     }
-
 
 }

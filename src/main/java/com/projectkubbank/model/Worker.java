@@ -18,6 +18,7 @@ import java.util.UUID;
 public class Worker implements Serializable {
     @Serial
     private static final long serialVersionUID = -4510849922040676107L;
+
     private UUID id;
     private String name;
     private String position;

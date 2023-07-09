@@ -23,5 +23,4 @@ public interface WorkerService {
 
     WorkerListDtoWrapped getAllWorker();
 
-
 }

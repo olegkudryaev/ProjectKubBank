@@ -10,6 +10,7 @@ import java.util.UUID;
 public class WorkerDtoInput implements Serializable {
     @Serial
     private static final long serialVersionUID = -2069111562748051924L;
+
     private UUID id;
     private String name;
     private String position;

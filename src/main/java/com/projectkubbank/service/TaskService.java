@@ -11,15 +11,17 @@ import java.util.UUID;
 
 @Service
 public interface TaskService {
+
     DtoWrapper addTaskInQueue(List<TaskDtoInput> taskDtoInput);
 
     DtoWrapper addThreeTasksToDB();
 
     TaskMiniListDtoWrapper getAllTasks();
 
-    TaskDtoWrapper getTaskById(UUID id);
+    TaskDtoWrapper getTaskById(UUID taskId);
 
     DtoWrapper updateTask(TaskDtoInput taskDtoInput);
 
     DtoWrapper addWorkerToTask(UUID workerId, UUID taskId);
+
 }

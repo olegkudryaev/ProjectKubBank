@@ -3,7 +3,6 @@ package com.projectkubbank.common;
 import com.projectkubbank.model.Task;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Component

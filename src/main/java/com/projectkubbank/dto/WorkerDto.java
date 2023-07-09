@@ -14,6 +14,7 @@ import java.util.UUID;
 public class WorkerDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 6287236421348329409L;
+
     private UUID id;
     private String name;
     private String position;
@@ -35,6 +36,5 @@ public class WorkerDto implements Serializable {
             }
         }
     }
-
 
 }
