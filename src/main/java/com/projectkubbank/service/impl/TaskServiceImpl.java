@@ -14,8 +14,6 @@ import com.projectkubbank.model.Task;
 import com.projectkubbank.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -43,8 +41,11 @@ public class TaskServiceImpl implements TaskService {
         this.taskRepository = taskRepository;
     }
 
-    @Value("${count.thread}")
-    int countThreads;
+    @Value("${count.pool.threads}")
+    private int countPoolThreads;
+
+    @Value("${use.threads}")
+    private int useThreads;
 
     @Override
     public DtoWrapper addTaskInQueue(List<TaskDtoInput> taskDtoInputList) {
@@ -64,7 +65,7 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public DtoWrapper addThreeTasksToDB() {
         try {
-            ExecutorService executor = Executors.newFixedThreadPool(countThreads);
+            ExecutorService executor = Executors.newFixedThreadPool(countPoolThreads);
             Runnable run = () -> {
                 log.info(Thread.currentThread().getName() + "start");
                 Task task = taskQueue.removeItem();
@@ -72,7 +73,7 @@ public class TaskServiceImpl implements TaskService {
                     taskRepository.addTask(task);
                 }
             };
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < useThreads; i++) {
                 executor.execute(run);
             }
             executor.execute(run);
