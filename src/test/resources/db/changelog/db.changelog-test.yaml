@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: /db/Workers-Test.sql
+  - include:
+      file: /db/Tasks-Test.sql

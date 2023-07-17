@@ -20,6 +20,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 public class TaskRepositoryImpl implements TaskRepository {
+
     private final JdbcTemplate jdbcTemplate;
 
     @Override

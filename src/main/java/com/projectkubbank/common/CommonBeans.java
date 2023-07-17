@@ -12,13 +12,13 @@ import javax.sql.DataSource;
 
 @Component
 public class CommonBeans {
-    @Value("${driver.class.name}")
+    @Value("${spring.driver.class.name}")
     String driverClassName;
-    @Value("${datasource.url}")
+    @Value("${spring.datasource.url}")
     String datasourceUrl;
-    @Value("${datasource.username}")
+    @Value("${spring.datasource.username}")
     String datasourceUsername;
-    @Value("${datasource.password}")
+    @Value("${spring.datasource.password}")
     String datasourcePassword;
 
     @Bean

@@ -54,7 +54,7 @@ public class TaskServiceImpl implements TaskService {
                 Task task = modelMapper.map(taskDtoInput, Task.class);
                 taskQueue.addItem(task);
             }
-            return DtoWrapper.builder().message("Задача в очереди").snackbarType("Info").success(true).build();
+            return DtoWrapper.builder().message("Задачи в очереди").snackbarType("Info").success(true).build();
         } catch (Exception e) {
             log.error(e.getLocalizedMessage());
             throw new RuntimeException(e.getLocalizedMessage());
@@ -76,7 +76,6 @@ public class TaskServiceImpl implements TaskService {
             for (int i = 0; i < useThreads; i++) {
                 executor.execute(run);
             }
-            executor.execute(run);
             executor.shutdown();
             return DtoWrapper.builder().message("Задача в БД").snackbarType("Info").success(true).build();
         } catch (Exception e) {
@@ -129,7 +128,7 @@ public class TaskServiceImpl implements TaskService {
             if (taskRepository.updateTask(task)) {
                 return DtoWrapper.builder().message("Задача обновлена").snackbarType("Info").success(true).build();
             }
-            return DtoWrapper.builder().message("Задача не обновлена").snackbarType("Info").success(true).build();
+            return DtoWrapper.builder().message("Задача не обновлена").snackbarType("Info").success(false).build();
         } catch (Exception e) {
             log.error(e.getLocalizedMessage());
             throw new RuntimeException(e.getLocalizedMessage());
@@ -143,7 +142,7 @@ public class TaskServiceImpl implements TaskService {
             if (taskRepository.addWorkerToTask(workerId, taskId)) {
                 return DtoWrapper.builder().message("Задаче назначен работник").snackbarType("Info").success(true).build();
             } else {
-                return DtoWrapper.builder().message("Задаче не назначен работник").snackbarType("Info").success(true).build();
+                return DtoWrapper.builder().message("Задаче не назначен работник").snackbarType("Info").success(false).build();
             }
         } catch (Exception e) {
             log.error(e.getLocalizedMessage());
