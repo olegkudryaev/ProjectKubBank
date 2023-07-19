@@ -10,7 +10,7 @@ public class WorkerNotFoundException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = -2796679526394011515L;
 
-    private WorkerDtoWrapped workerDtoWrapped;
+    private final WorkerDtoWrapped workerDtoWrapped;
 
     public WorkerNotFoundException() {
         this.workerDtoWrapped = new WorkerDtoWrapped(null);

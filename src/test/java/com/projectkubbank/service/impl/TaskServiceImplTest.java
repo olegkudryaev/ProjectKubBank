@@ -124,16 +124,16 @@ class TaskServiceImplTest {
     }
 
     @Test
-    void whenWeExpectedAllTasksButGotNull(){
+    void whenWeExpectedAllTasksButGetNull(){
         // Given
         // When
         Mockito.when(taskRepository.getAllTasks()).thenReturn(null);
         // Then
-        Assertions.assertThrows(TaskListNotFoundException.class, () -> taskServiceImpl.getAllTasks());
+        Assertions.assertThrows(NullPointerException.class, () -> taskServiceImpl.getAllTasks());
     }
 
     @Test
-    void whenWeExpectedAllTasksButGotOptEmpty(){
+    void whenWeExpectedAllTasksButGetOptEmpty(){
         // Given
         // When
         Mockito.when(taskRepository.getAllTasks()).thenReturn(Optional.empty());

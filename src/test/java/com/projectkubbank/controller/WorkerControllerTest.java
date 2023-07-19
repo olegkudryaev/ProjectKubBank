@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class WorkerControllerTest  extends AbstractContainerBaseTest {
+class WorkerControllerTest extends AbstractContainerBaseTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -39,7 +39,7 @@ public class WorkerControllerTest  extends AbstractContainerBaseTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void whenWeAddWorkerInDbAndGetSuccess() throws Exception {
+    void whenWeAddWorkerInDbAndGetSuccess() throws Exception {
         WorkerDtoInput workerDtoInput = createWorkerDtoInput();
         DtoWrapper expected = DtoWrapper.builder().message("Работник добавлен в БД").snackbarType("Info")
                 .success(true).build();
@@ -51,7 +51,7 @@ public class WorkerControllerTest  extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void whenWeAddWorkerWithNullNameInDbAndGetFailure() throws Exception {
+    void whenWeAddWorkerWithNullNameInDbAndGetFailure() throws Exception {
         WorkerDtoInput workerDtoInput = createWorkerDtoInput();
         workerDtoInput.setName(null);
         assertThrows(ServletException.class, () -> {
@@ -63,7 +63,7 @@ public class WorkerControllerTest  extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void whenWeAddWorkerInDbAndGetFailure() throws Exception {
+    void whenWeAddWorkerInDbAndGetFailure() throws Exception {
         WorkerDtoInput workerDtoInput = null;
         mockMvc.perform(post("/api/AddWorker")
                         .content(objectMapper.writeValueAsString(workerDtoInput))
@@ -72,7 +72,7 @@ public class WorkerControllerTest  extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void whenWeUpdateWorkerInDbAndGetSuccess() throws Exception {
+    void whenWeUpdateWorkerInDbAndGetSuccess() throws Exception {
         WorkerDtoInput workerDtoInput = createWorkerDtoInput();
         workerDtoInput.setId(UUID.fromString("ea89ae04-1c81-11ee-be56-0242ac120002"));
         DtoWrapper expected = DtoWrapper.builder().message("Работник обновлен в БД").snackbarType("Info")
@@ -85,7 +85,7 @@ public class WorkerControllerTest  extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void whenWeUpdateWorkerWithNullNameInDbAndGetFailure() throws Exception {
+    void whenWeUpdateWorkerWithNullNameInDbAndGetFailure() throws Exception {
         WorkerDtoInput workerDtoInput = createWorkerDtoInput();
         workerDtoInput.setName(null);
         DtoWrapper expected = DtoWrapper.builder().message("Работник не обновлен в БД").snackbarType("error")
@@ -101,7 +101,7 @@ public class WorkerControllerTest  extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void whenWeDeleteWorkerWithTasksInDbAndGetSuccess() throws Exception {
+    void whenWeDeleteWorkerWithTasksInDbAndGetSuccess() throws Exception {
         //существующий в БД UUID
         UUID existUUID = UUID.fromString("ea89ae04-1c81-11ee-be56-0242ac120002");
         DtoWrapper expected = DtoWrapper.builder().message("Работник удален из БД, вместе с задачами")
@@ -113,7 +113,7 @@ public class WorkerControllerTest  extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void whenWeDeleteWorkerWithTasksWithRandomUUIDInDbAndGetFailure() throws Exception {
+    void whenWeDeleteWorkerWithTasksWithRandomUUIDInDbAndGetFailure() throws Exception {
         UUID randomUUID = UUID.randomUUID();
         DtoWrapper expected = DtoWrapper.builder().message("Работник не удален из БД").snackbarType("error")
                 .success(false).build();
@@ -124,9 +124,9 @@ public class WorkerControllerTest  extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void whenWeDeleteWorkerWithOutTasksInDbAndGetSuccess() throws Exception {
+    void whenWeDeleteWorkerWithOutTasksInDbAndGetSuccess() throws Exception {
         //существующий в БД UUID
-        UUID existUUID = UUID.fromString("ea89ae04-1c81-11ee-be56-0242ac120002");
+        UUID existUUID = UUID.fromString("f925e2e8-1c81-11ee-be56-0242ac120002");
         DtoWrapper expected = DtoWrapper.builder().message("Работник удален из БД, без задач").snackbarType("info")
                 .success(true).build();
         mockMvc.perform(delete("/api/DeleteWorkerWithOutTasks/{workerId}", existUUID)
@@ -136,7 +136,7 @@ public class WorkerControllerTest  extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void whenWeDeleteWorkerWithOutTasksWithRandomUUIDInDbAndGetFailure() throws Exception {
+    void whenWeDeleteWorkerWithOutTasksWithRandomUUIDInDbAndGetFailure() throws Exception {
         UUID randomUUID = UUID.randomUUID();
         DtoWrapper expected = DtoWrapper.builder().message("Работник не удален из БД").snackbarType("error")
                 .success(false).build();
@@ -147,7 +147,7 @@ public class WorkerControllerTest  extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void whenWeGetWorkerByIdInDbAndGetSuccess() throws Exception {
+    void whenWeGetWorkerByIdInDbAndGetSuccess() throws Exception {
         //существующий в БД UUID
         UUID existUUID = UUID.fromString("f925e2e8-1c81-11ee-be56-0242ac120002");
         WorkerDto workerDto = createWorkerDto();
@@ -159,7 +159,7 @@ public class WorkerControllerTest  extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void whenWeGetWorkerByIdInDbAndGetFailure() throws Exception {
+    void whenWeGetWorkerByIdInDbAndGetFailure() throws Exception {
         UUID randomUUID = UUID.randomUUID();
         assertThrows(ServletException.class, () -> {
             mockMvc.perform(get("/api/GetWorkerById/{workerId}", randomUUID)
@@ -169,7 +169,7 @@ public class WorkerControllerTest  extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void whenWeGetAllWorkerInDbAndGetSuccess() throws Exception {
+    void whenWeGetAllWorkerInDbAndGetSuccess() throws Exception {
 
         MvcResult mvcResult = mockMvc.perform(get("/api/GetAllWorker")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -179,7 +179,7 @@ public class WorkerControllerTest  extends AbstractContainerBaseTest {
         Assertions.assertEquals(true, actual.isSuccess());
     }
 
-    private WorkerDtoInput createWorkerDtoInput(){
+    private WorkerDtoInput createWorkerDtoInput() {
         WorkerDtoInput workerDtoInput = new WorkerDtoInput();
         workerDtoInput.setId(UUID.fromString("8a8666a1-244d-4121-bb05-b27314de29f0"));
         workerDtoInput.setName("firstName");
@@ -188,7 +188,7 @@ public class WorkerControllerTest  extends AbstractContainerBaseTest {
         return workerDtoInput;
     }
 
-    private Worker createWorker(){
+    private Worker createWorker() {
         Worker worker = new Worker();
         worker.setId(UUID.fromString("8a8666a1-244d-4121-bb05-b27314de29f0"));
         worker.setName("firstName");
@@ -197,7 +197,7 @@ public class WorkerControllerTest  extends AbstractContainerBaseTest {
         return worker;
     }
 
-    private WorkerDto createWorkerDto(){
+    private WorkerDto createWorkerDto() {
         Worker worker = new Worker();
         worker.setId(UUID.fromString("f925e2e8-1c81-11ee-be56-0242ac120002"));
         worker.setName("John Kent");
@@ -207,7 +207,7 @@ public class WorkerControllerTest  extends AbstractContainerBaseTest {
         return new WorkerDto(worker);
     }
 
-    private List<Worker> createListWorkers(){
+    private List<Worker> createListWorkers() {
         List<Worker> workers = new ArrayList<>();
         workers.add(createWorker());
         workers.add(createWorker());

@@ -26,6 +26,7 @@ public class Wrapper<T> {
     }
 
     public Wrapper() {
+        //пустой конструктор для сериализации и десериализации
     }
 
 }

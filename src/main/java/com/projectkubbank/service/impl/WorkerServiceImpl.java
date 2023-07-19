@@ -24,8 +24,8 @@ import java.util.UUID;
 @Slf4j
 public class WorkerServiceImpl implements WorkerService {
 
-    private ModelMapper modelMapper;
-    private WorkerRepository workerRepository;
+    private final ModelMapper modelMapper;
+    private final WorkerRepository workerRepository;
 
     @Autowired
     public WorkerServiceImpl(ModelMapper modelMapper, WorkerRepository workerRepository) {
@@ -45,7 +45,7 @@ public class WorkerServiceImpl implements WorkerService {
                     .success(false).build();
         } catch (Exception e) {
             log.error(e.getLocalizedMessage());
-            throw new RuntimeException(e.getLocalizedMessage());
+            throw new NullPointerException(e.getLocalizedMessage());
         }
     }
 
@@ -60,13 +60,13 @@ public class WorkerServiceImpl implements WorkerService {
             return DtoWrapper.builder().message("Работник не обновлен в БД").snackbarType("error").success(false).build();
         } catch (Exception e) {
             log.error(e.getLocalizedMessage());
-            throw new RuntimeException(e.getLocalizedMessage());
+            throw new NullPointerException(e.getLocalizedMessage());
         }
     }
 
     @Override
     @Transactional
-        public DtoWrapper deleteWorkerWithTasks(UUID workerId) {
+    public DtoWrapper deleteWorkerWithTasks(UUID workerId) {
         try {
             if (workerRepository.deleteWorkerWithTasks(workerId)) {
                 return DtoWrapper.builder().message("Работник удален из БД, вместе с задачами").snackbarType("info").success(true).build();
@@ -74,7 +74,7 @@ public class WorkerServiceImpl implements WorkerService {
             return DtoWrapper.builder().message("Работник не удален из БД").snackbarType("error").success(false).build();
         } catch (Exception e) {
             log.error(e.getLocalizedMessage());
-            throw new RuntimeException(e.getLocalizedMessage());
+            throw new NullPointerException(e.getLocalizedMessage());
         }
     }
 
@@ -88,7 +88,7 @@ public class WorkerServiceImpl implements WorkerService {
             return DtoWrapper.builder().message("Работник не удален из БД").snackbarType("error").success(false).build();
         } catch (Exception e) {
             log.error(e.getLocalizedMessage());
-            throw new RuntimeException(e.getLocalizedMessage());
+            throw new NullPointerException(e.getLocalizedMessage());
         }
     }
 
@@ -102,10 +102,8 @@ public class WorkerServiceImpl implements WorkerService {
             }
             throw new WorkerNotFoundException();
         } catch (WorkerNotFoundException workerNotFoundException) {
+            log.error(workerNotFoundException.getLocalizedMessage());
             throw workerNotFoundException;
-        } catch (Exception e) {
-            log.error(e.getLocalizedMessage());
-            throw new RuntimeException(e.getLocalizedMessage());
         }
     }
 
@@ -121,10 +119,8 @@ public class WorkerServiceImpl implements WorkerService {
             }
             throw new WorkerListNotFoundException();
         } catch (WorkerListNotFoundException workerListNotFoundException) {
+            log.error(workerListNotFoundException.getLocalizedMessage());
             throw workerListNotFoundException;
-        } catch (Exception e) {
-            log.error(e.getLocalizedMessage());
-            throw new RuntimeException(e.getLocalizedMessage());
         }
     }
 }

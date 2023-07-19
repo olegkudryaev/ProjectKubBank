@@ -19,6 +19,7 @@ public class TaskDtoInput implements Serializable {
     private String status;
 
     public TaskDtoInput() {
+        //пустой конструктор для десериализации
     }
 
 }

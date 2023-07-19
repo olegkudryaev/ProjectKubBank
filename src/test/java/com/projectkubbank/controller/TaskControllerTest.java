@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class TaskControllerTest extends AbstractContainerBaseTest {
+class TaskControllerTest extends AbstractContainerBaseTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -38,7 +38,7 @@ public class TaskControllerTest extends AbstractContainerBaseTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void whenWeAddExistedTaskListInQueue() throws Exception {
+    void whenWeAddExistedTaskListInQueue() throws Exception {
         List<TaskDtoInput> taskDtoInput = createListTasks(3);
         DtoWrapper expected = DtoWrapper.builder().message("Задачи в очереди").snackbarType("Info").success(true).build();
         mockMvc.perform(post("/api/AddTaskInQueue")
@@ -49,7 +49,7 @@ public class TaskControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void whenWeAddManyNotExistingTaskInQueue() throws Exception {
+    void whenWeAddManyNotExistingTaskInQueue() throws Exception {
         mockMvc.perform(post("/api/AddTaskInQueue")
                         .content("{}")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -57,7 +57,7 @@ public class TaskControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void whenWeAddTasksToDBAndGetSuccess() throws Exception {
+    void whenWeAddTasksToDBAndGetSuccess() throws Exception {
         DtoWrapper expected = DtoWrapper.builder().message("Задача в БД").snackbarType("Info").success(true).build();
         mockMvc.perform(get("/api/AddThreeTasksToDB"))
                 .andExpect(status().isOk())
@@ -65,7 +65,7 @@ public class TaskControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void whenWeGetAllTasksAndGetSuccess() throws Exception {
+    void whenWeGetAllTasksAndGetSuccess() throws Exception {
         MvcResult result = mockMvc.perform(get("/api/GetAllTasks"))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -75,9 +75,9 @@ public class TaskControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void whenWeGetTaskByIdAndGetSuccess() throws Exception {
+    void whenWeGetTaskByIdAndGetSuccess() throws Exception {
         MvcResult result = mockMvc.perform(get("/api/GetTaskById/{taskId}"
-                        , "6f7907f0-2609-11ec-9621-0242ac130002")
+                        , "4774719e-1c82-11ee-be56-0242ac120002")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
         String responseBody = result.getResponse().getContentAsString();
@@ -86,14 +86,14 @@ public class TaskControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void whenWeGetTaskByIdAndGetFailure() throws Exception {
+    void whenWeGetTaskByIdAndGetFailure() throws Exception {
         mockMvc.perform(get("/api/GetTaskById/{taskId}", "0")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void whenWeUpdateTaskAndGetSuccess() throws Exception {
+    void whenWeUpdateTaskAndGetSuccess() throws Exception {
         TaskDtoInput taskDtoInput = createTaskDtoInput();
         MvcResult result = mockMvc.perform(put("/api/UpdateTask")
                         .content(objectMapper.writeValueAsString(taskDtoInput))
@@ -105,7 +105,7 @@ public class TaskControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void whenWeUpdateTaskAndGetFailure() throws Exception {
+    void whenWeUpdateTaskAndGetFailure() throws Exception {
         TaskDtoInput taskDtoInput = null;
         mockMvc.perform(put("/api/UpdateTask")
                         .content(objectMapper.writeValueAsString(taskDtoInput))
@@ -114,7 +114,7 @@ public class TaskControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void whenWeAddWorkerToTaskAndGetSuccess() throws Exception {
+    void whenWeAddWorkerToTaskAndGetSuccess() throws Exception {
         MvcResult result = mockMvc.perform(post("/api/AddWorkerToTask/{workerId}/{taskId}",
                         "f4d3e8fc-1c81-11ee-be56-0242ac120002", "e6ef0910-1c81-11ee-be56-0242ac120002")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -125,7 +125,7 @@ public class TaskControllerTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    public void whenWeAddWorkerToTaskAndGetFailure() throws Exception {
+    void whenWeAddWorkerToTaskAndGetFailure() throws Exception {
         mockMvc.perform(post("/api/AddWorkerToTask/{workerId}/{taskId}",
                         "0", "0")
                         .contentType(MediaType.APPLICATION_JSON))

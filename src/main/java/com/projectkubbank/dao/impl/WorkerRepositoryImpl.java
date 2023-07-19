@@ -63,7 +63,7 @@ public class WorkerRepositoryImpl implements WorkerRepository {
         log.info("Начато удаление работника вместе с задачами");
         try {
             List<Task> tasks = jdbcTemplate.query("SELECT * FROM public.\"Tasks\" WHERE performer = ?"
-                    , new Object[]{workerId}, new BeanPropertyRowMapper<>(Task.class));
+                    , new BeanPropertyRowMapper<>(Task.class), workerId);
             for (Task task : tasks) {
                 jdbcTemplate.update("DELETE FROM public.\"Tasks\" WHERE id = ?", task.getId());
             }
@@ -86,7 +86,7 @@ public class WorkerRepositoryImpl implements WorkerRepository {
         log.info("Начато удаление работника без задачами");
         try {
             List<Task> tasks = jdbcTemplate.query("SELECT * FROM public.\"Tasks\" WHERE performer = ?"
-                    , new Object[]{workerId}, new BeanPropertyRowMapper<>(Task.class));
+                    , new BeanPropertyRowMapper<>(Task.class), workerId);
             for (Task task : tasks) {
                 task.setPerformer(null);
                 jdbcTemplate.update("UPDATE public.\"Tasks\" SET performer = NULL WHERE id = ?", task.getId());
@@ -104,16 +104,18 @@ public class WorkerRepositoryImpl implements WorkerRepository {
         }
     }
 
+
+
     @Override
     @Transactional(readOnly = true)
     public Worker getWorkerById(UUID workerId) {
         log.info("Старт обращения в БД за работником по Id");
         try {
+            String taskId = "task_id";
             String sql = "SELECT w.id, w.name, w.position, w.avatar, t.id as task_id, t.title, t.description, t.time, t.status, t.performer " +
                     "FROM public.\"Workers\" w LEFT JOIN public.\"Tasks\" t ON w.id = t.performer WHERE w.id = ?";
             Worker result = jdbcTemplate.queryForObject(
                     sql,
-                    new Object[]{workerId},
                     (rs, rowNum) -> {
                         Worker worker = new Worker();
                         worker.setId(UUID.fromString(rs.getString("id")));
@@ -121,10 +123,10 @@ public class WorkerRepositoryImpl implements WorkerRepository {
                         worker.setPosition(rs.getString("position"));
                         worker.setAvatar(rs.getString("avatar"));
                         List<Task> tasks = new ArrayList<>();
-                        if (rs.getString("task_id") != null) {
+                        if (rs.getString(taskId) != null) {
                             do {
                                 Task task = new Task();
-                                task.setId(UUID.fromString(rs.getString("task_id")));
+                                task.setId(UUID.fromString(rs.getString(taskId)));
                                 task.setTitle(rs.getString("title"));
                                 task.setDescription(rs.getString("description"));
                                 task.setTime(rs.getTimestamp("time").toLocalDateTime());
@@ -135,7 +137,7 @@ public class WorkerRepositoryImpl implements WorkerRepository {
                             worker.setTaskList(tasks);
                         }
                         return worker;
-                    }
+                    }, workerId
             );
             log.info("Работник и его задачи получены по Id");
             return result;
@@ -150,6 +152,7 @@ public class WorkerRepositoryImpl implements WorkerRepository {
     public List<Worker> getAllWorker() {
         log.info("Старт обращения в БД за всеми работниками");
         try {
+            String taskId = "task_id";
             String sql = "SELECT w.id, w.name, w.position, w.avatar, t.id as task_id, t.title, t.description, t.time, t.status, t.performer " +
                     "sk_id, t.title, t.description, t.time, t.status, t.performer FROM public.\"Workers\" w LEFT JOIN public.\"Tasks\" t ON w.id = t.performer";
             List<Worker> workerList = jdbcTemplate.query(sql,
@@ -165,9 +168,9 @@ public class WorkerRepositoryImpl implements WorkerRepository {
                                 worker.setAvatar(rs.getString("avatar"));
                                 map.put(id, worker);
                             }
-                            if (rs.getString("task_id") != null) {
+                            if (rs.getString(taskId) != null) {
                                 Task task = new Task();
-                                task.setId(UUID.fromString(rs.getString("task_id")));
+                                task.setId(UUID.fromString(rs.getString(taskId)));
                                 task.setTitle(rs.getString("title"));
                                 task.setDescription(rs.getString("description"));
                                 task.setTime(rs.getTimestamp("time").toLocalDateTime());

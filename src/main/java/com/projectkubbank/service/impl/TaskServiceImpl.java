@@ -8,8 +8,7 @@ import com.projectkubbank.dto.TaskMiniDto;
 import com.projectkubbank.dto.wrapped.DtoWrapper;
 import com.projectkubbank.dto.wrapped.TaskDtoWrapper;
 import com.projectkubbank.dto.wrapped.TaskMiniListDtoWrapper;
-import com.projectkubbank.exceptions.TaskListNotFoundException;
-import com.projectkubbank.exceptions.TaskNotFoundException;
+import com.projectkubbank.exceptions.*;
 import com.projectkubbank.model.Task;
 import com.projectkubbank.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
@@ -55,9 +54,9 @@ public class TaskServiceImpl implements TaskService {
                 taskQueue.addItem(task);
             }
             return DtoWrapper.builder().message("Задачи в очереди").snackbarType("Info").success(true).build();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             log.error(e.getLocalizedMessage());
-            throw new RuntimeException(e.getLocalizedMessage());
+            throw new AddTaskInQueueException("Ошибка при добавлении задач в очередь: " + e.getMessage());
         }
     }
 
@@ -80,7 +79,7 @@ public class TaskServiceImpl implements TaskService {
             return DtoWrapper.builder().message("Задача в БД").snackbarType("Info").success(true).build();
         } catch (Exception e) {
             log.error(e.getLocalizedMessage());
-            throw new RuntimeException(e.getLocalizedMessage());
+            throw new AddThreeTasksToDBException("Ошибка при добавлении задач из очереди в БД " + e.getMessage());
         }
     }
 
@@ -89,7 +88,7 @@ public class TaskServiceImpl implements TaskService {
     public TaskMiniListDtoWrapper getAllTasks() {
         try {
             Optional<List<Task>> taskList = taskRepository.getAllTasks();
-            if (taskList != null) {
+            if (taskList.isPresent()) {
                 List<TaskMiniDto> taskMiniDto = new ArrayList<>();
                 taskList.get().forEach(task -> taskMiniDto.add(new TaskMiniDto(task)));
                 return new TaskMiniListDtoWrapper(taskMiniDto);
@@ -99,7 +98,7 @@ public class TaskServiceImpl implements TaskService {
             throw taskListNotFoundException;
         } catch (Exception e) {
             log.error(e.getLocalizedMessage());
-            throw new RuntimeException(e.getLocalizedMessage());
+            throw new NullPointerException("Ошибка при получении задач из БД " + e.getMessage());
         }
     }
 
@@ -113,10 +112,8 @@ public class TaskServiceImpl implements TaskService {
             }
             throw new TaskNotFoundException();
         } catch (TaskNotFoundException taskNotFoundException) {
+            log.error(taskNotFoundException.getLocalizedMessage());
             throw taskNotFoundException;
-        } catch (Exception e) {
-            log.error(e.getLocalizedMessage());
-            throw new RuntimeException(e.getLocalizedMessage());
         }
     }
 
@@ -131,7 +128,7 @@ public class TaskServiceImpl implements TaskService {
             return DtoWrapper.builder().message("Задача не обновлена").snackbarType("Info").success(false).build();
         } catch (Exception e) {
             log.error(e.getLocalizedMessage());
-            throw new RuntimeException(e.getLocalizedMessage());
+            throw new NullPointerException(e.getLocalizedMessage());
         }
     }
 
@@ -146,7 +143,7 @@ public class TaskServiceImpl implements TaskService {
             }
         } catch (Exception e) {
             log.error(e.getLocalizedMessage());
-            throw new RuntimeException(e.getLocalizedMessage());
+            throw new NullPointerException(e.getLocalizedMessage());
         }
     }
 

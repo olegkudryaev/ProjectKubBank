@@ -51,12 +51,8 @@ public class TaskRepositoryImpl implements TaskRepository {
         try {
             Optional<List<Task>> taskList = Optional.of(jdbcTemplate.query("SELECT * FROM public.\"Tasks\"",
                     new BeanPropertyRowMapper<>(Task.class)));
-            if (taskList.isPresent()) {
-                log.info("Лист задач получен");
-                return taskList;
-            } else {
-                return Optional.empty();
-            }
+            log.info("Лист задач получен");
+            return taskList;
         } catch (DataAccessException e) {
             log.error(e.getLocalizedMessage());
             throw e;
@@ -68,9 +64,9 @@ public class TaskRepositoryImpl implements TaskRepository {
     public Optional<Task> getTaskById(UUID taskId) {
         log.info("Начат процес получения задачи по id");
         try {
-            Optional<List<Task>> taskList = Optional.of(jdbcTemplate.query("SELECT * FROM public.\"Tasks\" WHERE id = ?", new Object[]{taskId},
-                    new BeanPropertyRowMapper<>(Task.class)));
-            if (taskList.get().size() > 0) {
+            Optional<List<Task>> taskList = Optional.of(jdbcTemplate.query("SELECT * FROM public.\"Tasks\" WHERE id = ?",
+                    new BeanPropertyRowMapper<>(Task.class), taskId));
+            if (!taskList.get().isEmpty()) {
                 log.info("Задача по id получена");
                 return taskList.get().stream().findFirst();
             } else {

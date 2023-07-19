@@ -17,6 +17,9 @@ public class WorkerDtoInput implements Serializable {
     private String avatar;
 
     public WorkerDtoInput() {
+        //пустой конструктор для десериализации
     }
+
+
 
 }

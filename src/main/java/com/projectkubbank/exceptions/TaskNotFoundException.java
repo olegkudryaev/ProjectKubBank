@@ -10,7 +10,7 @@ public class TaskNotFoundException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = -6830495712383485209L;
 
-    private TaskDtoWrapper taskDtoWrapper;
+    private final TaskDtoWrapper taskDtoWrapper;
 
     public TaskNotFoundException() {
         this.taskDtoWrapper = new TaskDtoWrapper(null);
