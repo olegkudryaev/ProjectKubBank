@@ -8,7 +8,6 @@ import com.projectkubbank.dto.wrapped.DtoWrapper;
 import com.projectkubbank.dto.wrapped.TaskDtoWrapper;
 import com.projectkubbank.dto.wrapped.TaskMiniListDtoWrapper;
 import com.projectkubbank.model.Task;
-import com.projectkubbank.service.TaskService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc

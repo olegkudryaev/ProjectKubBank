@@ -23,4 +23,7 @@ public class WorkerListDtoWrapped extends Wrapper<WorkerDto> implements Serializ
             this.setContent(null);
         }
     }
+
+    public WorkerListDtoWrapped() {
+    }
 }

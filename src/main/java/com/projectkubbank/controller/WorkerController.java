@@ -6,7 +6,6 @@ import com.projectkubbank.dto.wrapped.DtoWrapper;
 import com.projectkubbank.dto.wrapped.WorkerDtoWrapped;
 import com.projectkubbank.dto.wrapped.WorkerListDtoWrapped;
 import com.projectkubbank.service.WorkerService;
-import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,17 +41,17 @@ public class WorkerController implements WorkerControllerDocs {
     }
 
     @Override
-    @DeleteMapping("/DeleteWorkerWithTasks")
+    @DeleteMapping("/DeleteWorkerWithTasks/{workerId}")
     public ResponseEntity<DtoWrapper> deleteWorkerWithTasks(
-            @Parameter(description = "workerId") @RequestParam(value = "id", required = true) UUID id) {
-        DtoWrapper result = workerService.deleteWorkerWithTasks(id);
+            @PathVariable("workerId") UUID workerId) {
+        DtoWrapper result = workerService.deleteWorkerWithTasks(workerId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @Override
-    @DeleteMapping("/DeleteWorkerWithOutTasks")
+    @DeleteMapping("/DeleteWorkerWithOutTasks/{workerId}")
     public ResponseEntity<DtoWrapper> deleteWorkerWithOutTasks(
-            @Parameter(description = "workerId") @RequestParam(value = "workerId", required = true) UUID workerId) {
+            @PathVariable("workerId") UUID workerId) {
         DtoWrapper result = workerService.deleteWorkerWithOutTasks(workerId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
