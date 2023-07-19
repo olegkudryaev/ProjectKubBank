@@ -49,7 +49,7 @@ public class TaskController implements TaskControllerDocs {
     @GetMapping("/GetTaskById/{taskId}")
     public ResponseEntity<TaskDtoWrapper> getTaskById(
             @PathVariable("taskId") UUID taskId) {
-        TaskDtoWrapper result = taskService.getTaskById(taskId);
+            TaskDtoWrapper result = taskService.getTaskById(taskId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -62,7 +62,7 @@ public class TaskController implements TaskControllerDocs {
     }
 
     @Override
-    @GetMapping("/AddWorkerToTask/{workerId}/{taskId}")
+    @PostMapping("/AddWorkerToTask/{workerId}/{taskId}")
     public ResponseEntity<DtoWrapper> addWorkerToTask(
             @PathVariable("workerId") UUID workerId,
             @PathVariable("taskId") UUID taskId) {

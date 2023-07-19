@@ -111,7 +111,7 @@ class TaskServiceImplTest {
     }
 
     @Test
-    void whenWeGetAllTasks(){
+    void whenWeGetAllTasksAndGetSuccess(){
         // Given
         Optional<List<Task>> taskListOpt = createTaskListOpt();
         Optional<List<TaskMiniDto>> taskMiniListOpt = createTaskMiniListOpt();
@@ -142,7 +142,7 @@ class TaskServiceImplTest {
     }
     
     @Test
-    void whenWeGetTaskById(){
+    void whenWeGetTaskByIdAndGetSuccess(){
         // Given
         Optional<Task> task = Optional.of(createTask());
         TaskDto taskDto = modelMapper.map(task.get(), TaskDto.class);
@@ -155,7 +155,7 @@ class TaskServiceImplTest {
     }
 
     @Test
-    void whenWeGetTaskByIdButGotOptEmpty(){
+    void whenWeGetTaskByIdAndGetOptEmpty(){
         // Given
         UUID uuid = UUID.randomUUID();
         // When
@@ -165,7 +165,7 @@ class TaskServiceImplTest {
     }
 
     @Test
-    void whenWeGetTaskByIdButGotRuntimeException(){
+    void whenWeGetTaskByIdAndGetRuntimeException(){
         // Given
         UUID uuid = UUID.randomUUID();
         // When

@@ -23,4 +23,6 @@ public class TaskDtoWrapper extends WrapperOne<TaskDto> implements Serializable 
         }
     }
 
+    public TaskDtoWrapper() {
+    }
 }

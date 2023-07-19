@@ -38,7 +38,6 @@ public class WorkerServiceImpl implements WorkerService {
     public DtoWrapper addWorker(WorkerDtoInput workerDtoInput) {
         try {
             Worker worker = modelMapper.map(workerDtoInput, Worker.class);
-            Boolean b = workerRepository.addWorker(worker);
             if (workerRepository.addWorker(worker)) {
                 return DtoWrapper.builder().message("Работник добавлен в БД").snackbarType("Info").success(true).build();
             }

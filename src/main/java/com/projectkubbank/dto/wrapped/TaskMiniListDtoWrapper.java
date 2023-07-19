@@ -23,4 +23,7 @@ public class TaskMiniListDtoWrapper extends Wrapper<TaskMiniDto> implements Seri
             this.setContent(null);
         }
     }
+
+    public TaskMiniListDtoWrapper() {
+    }
 }
