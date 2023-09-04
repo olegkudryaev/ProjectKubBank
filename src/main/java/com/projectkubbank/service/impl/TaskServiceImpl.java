@@ -3,7 +3,6 @@ package com.projectkubbank.service.impl;
 import com.projectkubbank.common.TaskQueue;
 import com.projectkubbank.dao.TaskRepository;
 import com.projectkubbank.dto.TaskDto;
-import com.projectkubbank.dto.TaskDtoInput;
 import com.projectkubbank.dto.TaskMiniDto;
 import com.projectkubbank.dto.wrapped.DtoWrapper;
 import com.projectkubbank.dto.wrapped.TaskDtoWrapper;
@@ -46,7 +45,6 @@ public class TaskServiceImpl implements TaskService {
     @Value("${use.threads}")
     private int useThreads;
 
-    @Override
     public DtoWrapper addTaskInQueue(List<TaskDtoInput> taskDtoInputList) {
         try {
             for (TaskDtoInput taskDtoInput : taskDtoInputList) {
@@ -59,6 +57,20 @@ public class TaskServiceImpl implements TaskService {
             throw new AddTaskInQueueException("Ошибка при добавлении задач в очередь: " + e.getMessage());
         }
     }
+
+    /*@Override
+    public DtoWrapper addTaskInQueue(List<TaskDtoInput> taskDtoInputList) {
+        try {
+            for (TaskDtoInput taskDtoInput : taskDtoInputList) {
+                Task task = modelMapper.map(taskDtoInput, Task.class);
+                taskQueue.addItem(task);
+            }
+            return DtoWrapper.builder().message("Задачи в очереди").snackbarType("Info").success(true).build();
+        } catch (RuntimeException e) {
+            log.error(e.getLocalizedMessage());
+            throw new AddTaskInQueueException("Ошибка при добавлении задач в очередь: " + e.getMessage());
+        }
+    }*/
 
     @Override
     @Transactional

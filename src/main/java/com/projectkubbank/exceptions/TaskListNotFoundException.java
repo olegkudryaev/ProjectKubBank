@@ -7,6 +7,7 @@ import java.io.Serial;
 
 @Getter
 public class TaskListNotFoundException extends RuntimeException {
+
     @Serial
     private static final long serialVersionUID = -6830495712383485209L;
 

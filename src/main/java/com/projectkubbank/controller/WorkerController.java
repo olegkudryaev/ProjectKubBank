@@ -6,7 +6,10 @@ import com.projectkubbank.dto.wrapped.DtoWrapper;
 import com.projectkubbank.dto.wrapped.WorkerDtoWrapped;
 import com.projectkubbank.dto.wrapped.WorkerListDtoWrapped;
 import com.projectkubbank.service.WorkerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,19 +18,15 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class WorkerController implements WorkerControllerDocs {
 
     private final WorkerService workerService;
 
-    @Autowired
-    public WorkerController(WorkerService workerService) {
-        this.workerService = workerService;
-    }
-
     @Override
     @PostMapping("/AddWorker")
     public ResponseEntity<DtoWrapper> addWorker(
-            @RequestBody WorkerDtoInput workerDtoInput) {
+            @RequestBody @Valid @NotNull WorkerDtoInput workerDtoInput) {
         DtoWrapper result = workerService.addWorker(workerDtoInput);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
@@ -35,7 +34,7 @@ public class WorkerController implements WorkerControllerDocs {
     @Override
     @PutMapping("/UpdateWorker")
     public ResponseEntity<DtoWrapper> updateWorker(
-            @RequestBody WorkerDtoInput workerDtoInput) {
+            @RequestBody @Valid @NotNull WorkerDtoInput workerDtoInput) {
         DtoWrapper result = workerService.updateWorker(workerDtoInput);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -43,7 +42,10 @@ public class WorkerController implements WorkerControllerDocs {
     @Override
     @DeleteMapping("/DeleteWorkerWithTasks/{workerId}")
     public ResponseEntity<DtoWrapper> deleteWorkerWithTasks(
-            @PathVariable("workerId") UUID workerId) {
+            @PathVariable("workerId")
+            @org.hibernate.validator.constraints.UUID(message = "Invalid UUID")
+            @NotBlank
+            UUID workerId) {
         DtoWrapper result = workerService.deleteWorkerWithTasks(workerId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -51,7 +53,10 @@ public class WorkerController implements WorkerControllerDocs {
     @Override
     @DeleteMapping("/DeleteWorkerWithOutTasks/{workerId}")
     public ResponseEntity<DtoWrapper> deleteWorkerWithOutTasks(
-            @PathVariable("workerId") UUID workerId) {
+            @PathVariable("workerId")
+            @org.hibernate.validator.constraints.UUID(message = "Invalid UUID")
+            @NotBlank
+            UUID workerId) {
         DtoWrapper result = workerService.deleteWorkerWithOutTasks(workerId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -59,7 +64,10 @@ public class WorkerController implements WorkerControllerDocs {
     @Override
     @GetMapping("/GetWorkerById/{workerId}")
     public ResponseEntity<WorkerDtoWrapped> getWorkerById(
-            @PathVariable("workerId") UUID workerId) {
+            @PathVariable("workerId")
+            @org.hibernate.validator.constraints.UUID(message = "Invalid UUID")
+            @NotBlank
+            UUID workerId) {
         WorkerDtoWrapped result = workerService.getWorkerById(workerId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

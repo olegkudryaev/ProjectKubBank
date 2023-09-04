@@ -17,7 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,12 +53,10 @@ class WorkerControllerTest extends AbstractContainerBaseTest {
     void whenWeAddWorkerWithNullNameInDbAndGetFailure() throws Exception {
         WorkerDtoInput workerDtoInput = createWorkerDtoInput();
         workerDtoInput.setName(null);
-        assertThrows(ServletException.class, () -> {
             mockMvc.perform(post("/api/AddWorker")
                             .content(objectMapper.writeValueAsString(workerDtoInput))
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isBadRequest());
-        });
     }
 
     @Test
@@ -88,16 +85,10 @@ class WorkerControllerTest extends AbstractContainerBaseTest {
     void whenWeUpdateWorkerWithNullNameInDbAndGetFailure() throws Exception {
         WorkerDtoInput workerDtoInput = createWorkerDtoInput();
         workerDtoInput.setName(null);
-        DtoWrapper expected = DtoWrapper.builder().message("Работник не обновлен в БД").snackbarType("error")
-                .success(false).build();
-        ResultActions resultRequest = mockMvc.perform(put("/api/UpdateWorker")
+        mockMvc.perform(put("/api/UpdateWorker")
                         .content(objectMapper.writeValueAsString(workerDtoInput))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-        MvcResult result = resultRequest.andReturn();
-        String responseBody = result.getResponse().getContentAsString();
-        DtoWrapper actual = objectMapper.readValue(responseBody, DtoWrapper.class);
-        Assertions.assertEquals(expected.isSuccess(), actual.isSuccess());
+                .andExpect(status().isBadRequest());
     }
 
     @Test

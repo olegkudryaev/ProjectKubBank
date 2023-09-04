@@ -9,9 +9,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Component
 @Data
-
 public class TaskDto implements Serializable {
 
     @Serial

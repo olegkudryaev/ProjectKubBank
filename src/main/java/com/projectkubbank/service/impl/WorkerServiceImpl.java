@@ -69,7 +69,8 @@ public class WorkerServiceImpl implements WorkerService {
     public DtoWrapper deleteWorkerWithTasks(UUID workerId) {
         try {
             if (workerRepository.deleteWorkerWithTasks(workerId)) {
-                return DtoWrapper.builder().message("Работник удален из БД, вместе с задачами").snackbarType("info").success(true).build();
+                return DtoWrapper.builder().message("Работник удален из БД, вместе с задачами").snackbarType("info")
+                        .success(true).build();
             }
             return DtoWrapper.builder().message("Работник не удален из БД").snackbarType("error").success(false).build();
         } catch (Exception e) {
@@ -83,7 +84,8 @@ public class WorkerServiceImpl implements WorkerService {
     public DtoWrapper deleteWorkerWithOutTasks(UUID workerId) {
         try {
             if (workerRepository.deleteWorkerWithOutTasks(workerId)) {
-                return DtoWrapper.builder().message("Работник удален из БД, без задач").snackbarType("info").success(true).build();
+                return DtoWrapper.builder().message("Работник удален из БД, без задач").snackbarType("info")
+                        .success(true).build();
             }
             return DtoWrapper.builder().message("Работник не удален из БД").snackbarType("error").success(false).build();
         } catch (Exception e) {
